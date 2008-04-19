@@ -1,0 +1,6 @@
+config/locomotive.yml
+log/*.log
+tmp/**/*
+.DS_Store
+doc/api
+doc/app
