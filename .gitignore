@@ -1,5 +1,6 @@
 config/locomotive.yml
 log/*.log
+log/locomotive.pid
 tmp/**/*
 .DS_Store
 doc/api
