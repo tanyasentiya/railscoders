@@ -1,2 +1,0 @@
-page.remove "tag-#{@tag_to_delete.id}"
-page.visual_effect :highlight, 'taglist', :duration => 2

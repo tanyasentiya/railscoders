@@ -1,5 +1,4 @@
 require 'digest/sha2'
-require 'rss/2.0'
 
 class User < ActiveRecord::Base
   attr_protected :hashed_password, :enabled
@@ -24,20 +23,15 @@ class User < ActiveRecord::Base
   has_many :articles
   has_many :entries
   has_many :comments
-  has_many :photos, :extend => TagCountsExtension
 
   has_many :topics
   has_many :posts
   
   has_many :friendships
   has_many :friends, :through => :friendships, :class_name => 'User'
-  has_many :usertemplates
 
   def before_save
     self.hashed_password = User.encrypt(password) if !password.blank?
-    if self.has_attribute?('flickr_username') && !self.flickr_username.blank?
-      self.flickr_id = self.get_flickr_id
-    end
   end
 
   def password_required?
@@ -59,62 +53,6 @@ class User < ActiveRecord::Base
   
   def email_with_username
     "#{username} <#{email}>"
-  end  
-  
-  def get_flickr_id
-    # build the flickr request
-    flickr_request = "http://api.flickr.com/services/rest/?"
-    flickr_request += "method=flickr.people.findByUsername"
-    flickr_request += "&username=#{self.flickr_username}"
-    flickr_request += "&api_key=#{FLICKR_API_KEY}"
-
-    # perform the API call
-    response = ""
-    open(flickr_request) do |s|
-      response = s.read
-    end
-
-    # parse the result
-    xml_response = REXML::Document.new(response)
-    if xml_response.root.attributes["stat"] == 'ok'
-      xml_response.root.elements["user"].attributes["nsid"]
-    else
-      nil
-    end
-  end
-  
-  def flickr_feed
-    # build the flickr request
-    flickr_request = "http://api.flickr.com/services/rest/?"
-    flickr_request += "method=flickr.people.getPublicPhotos"
-    flickr_request += "&per_page=4"
-    flickr_request += "&user_id=#{self.flickr_id}"
-    flickr_request += "&api_key=#{FLICKR_API_KEY}"
-
-    # perform the API call
-    response = ""
-    open(flickr_request) do |s|
-      response = s.read
-    end
-    
-    # parse the result
-    xml_response = REXML::Document.new(response)
-    if xml_response.root.attributes["stat"] == 'ok'
-      flickr_photos = []
-      xml_response.root.elements.each("photos/photo") do |photo|
-        photo_url =  "http://farm" + photo.attributes["farm"]
-        photo_url += ".static.flickr.com/" + photo.attributes["server"]+"/" + photo.attributes["id"]
-        photo_url += "_" + photo.attributes["secret"]+"_t.jpg"
-        flickr_photos << photo_url
-      end
-      return flickr_photos
-    else
-      nil
-    end
-  end
-  
-  def to_liquid
-    UserDrop.new(self)
   end
   
 end

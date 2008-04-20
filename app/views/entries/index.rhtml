@@ -24,8 +24,6 @@
   </div>
 <% end -%>
 
-<% if @entry_pages.page_count > 1 %>
-  <p class="pagination">Pages: <strong>
-    <%= pagination_links @entry_pages, :params => params %>
-  </strong></p>
-<% end %>
+<p class="pagination">
+	<%= will_paginate @entries %>
+</p>

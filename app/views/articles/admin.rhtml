@@ -2,11 +2,9 @@
 
 <p><%= link_to 'Create New Article', new_article_path %></p>
 
-<% if @articles_pages.page_count > 1 %>
-  <p class="pagination">Pages: <strong>
-    <%= pagination_links @articles_pages, :params => params %>
-  </strong></p>
-<% end %>
+<p class="pagination">
+	<%= will_paginate @articles %>
+</p>
 
 <ul>
 <% @articles.each do |article| %>

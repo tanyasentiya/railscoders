@@ -6,7 +6,7 @@ class TopicsController < ApplicationController
   # GET /topics.xml
   def index
     @forum = Forum.find(params[:forum_id])
-    @topics_pages, @topics = paginate(:topics, 
+    @topics = Topic.paginate(:page => params[:page],
         :include => :user, 
         :conditions => ['forum_id = ?', @forum], 
         :order => 'topics.updated_at DESC') 

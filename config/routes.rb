@@ -13,11 +13,6 @@ ActionController::Routing::Routes.draw do |map|
   # -- just remember to delete public/index.html.
   # map.connect '', :controller => "welcome"
 
-  # Allow downloading Web Service WSDL as a file with an extension
-  # instead of a file named 'wsdl'
-  map.connect ':controller/service.wsdl', :action => 'wsdl'
-
-
   # RailsCoders routes
   map.index '/', :controller => 'pages', 
                  :action => 'show', 
@@ -25,21 +20,13 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :pages
   map.resources :blogs
-  map.resources :photos
-  map.resources :tags
-  map.resources :usertemplates
     
   map.resources :users, :member => { :enable => :put } do |users|
-    users.resources :roles
-    users.resources :entries do |entry|
-      entry.resources :comments
+    users.resources :roles, :name_prefix => nil
+    users.resources :entries, :name_prefix => nil do |entry|
+      entry.resources :comments, :name_prefix => nil
     end
-    users.resources :friends
-    users.resources :tags, :name_prefix => 'user_',
-                           :controller => 'user_tags'
-    users.resources :photos, :name_prefix => 'user_',
-                             :controller => 'user_photos',
-                             :member => { :add_tag => :put, :remove_tag => :delete }
+    users.resources :friends, :name_prefix => nil
   end
 
   map.resources :articles, :collection => {:admin => :get}
@@ -49,8 +36,8 @@ ActionController::Routing::Routes.draw do |map|
   end
   
   map.resources :forums do |forum|
-    forum.resources :topics do |topic|
-      topic.resources :posts
+    forum.resources :topics, :name_prefix => nil do |topic|
+      topic.resources :posts, :name_prefix => nil
     end
   end
   
@@ -60,74 +47,6 @@ ActionController::Routing::Routes.draw do |map|
                  :controller => 'users', 
                  :action => 'show_by_username'
                  
-
-  # Mobile Routes
-
-  map.resources :pages, 
-                :controller => 'mobile/pages', 
-                :path_prefix => '/mobile',
-                :name_prefix => 'mobile_'
-  
-  map.resources :articles, 
-                :controller => 'mobile/articles', 
-                :path_prefix => '/mobile',
-                :name_prefix => 'mobile_'
-
-  map.resources :blogs,
-                :controller => 'mobile/blogs', 
-                :path_prefix => '/mobile',
-                :name_prefix => 'mobile_'
-
-  map.resources :photos, 
-                :controller => 'mobile/photos', 
-                :path_prefix => '/mobile',
-                :name_prefix => 'mobile_'
-
-  map.resources :categories, 
-                :controller => 'mobile/categories', 
-                :path_prefix => '/mobile',
-                :name_prefix => 'mobile_' do |categories|
-    categories.resources :articles, 
-                  :controller => 'mobile/articles', 
-                  :name_prefix => 'mobile_category_'
-  end
-
-  map.resources :users, 
-                :controller => 'mobile/users',
-                :path_prefix => '/mobile',
-                :name_prefix => 'mobile_' do |users|
-    users.resources :photos,
-                    :controller => 'mobile/user_photos',
-                    :name_prefix => 'mobile_user_'
-    users.resources :entries,
-                    :controller => 'mobile/entries',
-                    :name_prefix => 'mobile_'
-  end
-  
-  map.resources :forums, 
-                :controller => 'mobile/forums', 
-                :path_prefix => '/mobile',
-                :name_prefix => 'mobile_' do |forums|
-    forums.resources :topics,
-                     :controller => 'mobile/topics', 
-                     :name_prefix => 'mobile_' do |topics|
-      topics.resources :posts,
-                       :controller => 'mobile/posts', 
-                       :name_prefix => 'mobile_'    
-    end
-  end
-
-  map.mobile_index '/mobile', :controller => 'mobile/pages',
-                              :action => 'show', 
-                              :id => "1"
-
-  map.mobile_show_user  '/mobile/user/:username', :controller => 'mobile/users', :action => 'show_by_username'
-  map.mobile_all_blogs  '/mobile/blogs', :controller => 'mobile/blogs', :action => 'index'
-  map.mobile_all_photos '/mobile/photos', :controller => 'mobile/photos', :action => 'index'
-  
-  map.mobile_login  '/mobile/login', :controller => 'mobile/account', :action => 'login'
-  map.mobile_logout '/mobile/logout', :controller => 'mobile/account', :action => 'logout'
-
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id.:format'
   map.connect ':controller/:action/:id'

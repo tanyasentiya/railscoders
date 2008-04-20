@@ -3,29 +3,16 @@ class EntriesController < ApplicationController
   
   def index
     @user = User.find(params[:user_id])
-    @entry_pages = Paginator.new(self, @user.entries_count, 10, params[:page])
-    @entries = @user.entries.find(:all, :order => 'created_at DESC',
-                                  :limit => @entry_pages.items_per_page,
-                                  :offset => @entry_pages.current.offset)
-                                  
-    @usertemplate = @user.usertemplates.find_by_name('blog_index')
-    if @usertemplate and @usertemplate.body.any?
-      @page = Liquid::Template.parse(@usertemplate.body)
-      render :text => @page.render({'user' => @user, 'entries' => @entries}, [TextFilters])
-    end
+    @entries = Entry.paginate(:page => params[:page],
+      :order => 'created_at DESC',
+      :conditions => ['user_id = ?', @user])
   end
 
   def show
-    @user = User.find(params[:user_id], :include => :usertemplates)
+    @user = User.find(params[:user_id])
     @entry = Entry.find_by_id_and_user_id(params[:id], 
                                           params[:user_id], 
                                           :include => [:user, [:comments => :user]])
-                                          
-    @usertemplate = @user.usertemplates.find_by_name('blog_entry')
-    if @usertemplate and @usertemplate.body.any?
-      @page = Liquid::Template.parse(@usertemplate.body)
-      render :text => @page.render({'user' => @user, 'entry' => @entry, 'comments' => @entry.comments}, [TextFilters])
-    end
   end
 
   def new

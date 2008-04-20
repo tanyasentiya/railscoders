@@ -6,7 +6,6 @@
             :url => user_url(@user), 
             :html => { :method => :put } do |f| -%>
   <p>Email:<br /><%= f.text_field :email, :size => 60 %></p>
-  <p>Flickr Username:<br /><%= f.text_field :flickr_username, :size => 60 %><p>
   <p>Password:<br /><%= f.password_field :password, :size => 60 %></p>
   <p>Password Confirmation:<br />
     <%= f.password_field :password_confirmation, :size => 60 %></p>

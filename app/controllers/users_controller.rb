@@ -9,8 +9,6 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
     @entries = @user.entries.find(:all, :limit => 3, :order => 'created_at DESC')
-    @photos = @user.photos.find(:all, :limit => 3, :order => 'created_at DESC')
-    @flickr_feed = @user.flickr_feed if @user.flickr_id
   end
   
   def show_by_username

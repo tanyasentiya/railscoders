@@ -7,7 +7,7 @@ class PostsController < ApplicationController
   # GET /posts.xml
   def index
     @topic = Topic.find(params[:topic_id], :include => :forum) 
-    @posts_pages, @posts = paginate(:posts, 
+    @posts = Post.paginate(:page => params[:page],
         :include => :user, 
         :conditions => ['topic_id = ?', @topic])
   

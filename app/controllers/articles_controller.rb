@@ -3,13 +3,12 @@ class ArticlesController < ApplicationController
 
   def index
     if params[:category_id]
-      @articles_pages, @articles = paginate(:articles, 
+      @articles = Article.paginate(:page => params[:page],
         :include => :user, 
         :order => 'published_at DESC',
         :conditions => "category_id=#{params[:category_id].to_i} AND published=true")
     else
-      @articles = Article.find_all_by_published(true)
-      @articles_pages, @articles = paginate(:articles, 
+      @articles = Article.paginate(:page => params[:page], 
         :include => :user,
         :order => 'published_at DESC', 
         :conditions => "published = true")        
@@ -70,7 +69,7 @@ class ArticlesController < ApplicationController
   end
 
   def admin
-    @articles_pages, @articles = paginate(:articles, :order => 'published_at DESC')
+    @articles = Article.paginate(:page => params[:page], :order => 'published_at DESC')
   end
 
 end

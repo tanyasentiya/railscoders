@@ -4,11 +4,9 @@
 
 <h2>News Articles</h2>
 
-<% if @articles_pages.page_count > 1 %>
-  <p class="pagination">Pages: <strong>
-    <%= pagination_links @articles_pages, :params => params %>
-  </strong></p>
-<% end %>
+<p class="pagination">
+	<%= will_paginate @articles %>
+</p>
 
 <% @articles.each do |article| %>
   <div class="article">

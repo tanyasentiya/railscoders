@@ -15,11 +15,9 @@
 <% end -%>
 </p>
 
-<% if @posts_pages.page_count > 1 %>
-  <p class="pagination">Pages: <strong>
-    <%= pagination_links @posts_pages, :params => params %>
-  </strong></p>
-<% end %>
+<p class="pagination">
+	<%= will_paginate @posts %>
+</p>
 
 <table id="posts">
   <tr>
@@ -57,8 +55,6 @@
   <% end -%>
 </table>
 
-<% if @posts_pages.page_count > 1 %>
-  <p class="pagination">Pages: <strong>
-    <%= pagination_links @posts_pages, :params => params %>
-  </strong></p>
-<% end %>
+<p class="pagination">
+	<%= will_paginate @posts %>
+</p>
